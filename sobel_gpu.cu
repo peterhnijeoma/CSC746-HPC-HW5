@@ -2,7 +2,7 @@
 // (C) 2021, E. Wes Bethel and Peter Ijeoma
 // sobel_gpu.cpp
 // usage:
-//      sobel_gpu [number of threads per block]
+//      sobel_gpu [<number of threads per block> <number of thread blocks>]
 // if no argument (number of threads per block) is passed, the hard coded value
 // 256 is used and the number of block is 1 as hard coded.
 
@@ -223,7 +223,7 @@ int main (int ac, char *av[])
    if (ac > 1)
    {
       nThreadsPerBlock = atoi(av[1]);
-      nBlocks = (nvalues + nThreadsPerBlock -1) / nThreadsPerBlock;
+      nBlocks = atoi(av[2]);
    }
    
    printf(" GPU configuration: %d blocks, %d threads per block \n", nBlocks, nThreadsPerBlock);
