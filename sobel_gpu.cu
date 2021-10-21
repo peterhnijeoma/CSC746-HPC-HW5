@@ -229,7 +229,7 @@ int main (int ac, char *av[])
    printf(" GPU configuration: %d blocks, %d threads per block \n", nBlocks, nThreadsPerBlock);
 
    // invoke the kernel on the device
-   sobel_kernel_gpu<<<nBlocks, nThreadsPerBlock>>>(in_data_floats, out_data_floats, nvalues, data_rows, data_cols, device_gx, device_gy);
+   sobel_kernel_gpu<<<nBlocks, nThreadsPerBlock>>>(in_data_floats, out_data_floats, nvalues, data_dims[1], data_dims[0], device_gx, device_gy);
 
    // wait for it to finish, check errors
    gpuErrchk (  cudaDeviceSynchronize() );
