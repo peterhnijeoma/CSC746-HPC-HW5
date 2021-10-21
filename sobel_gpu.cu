@@ -1,9 +1,10 @@
 //
-// (C) 2021, E. Wes Bethel
+// (C) 2021, E. Wes Bethel and Peter Ijeoma
 // sobel_gpu.cpp
 // usage:
-//      sobel_gpu [no args, all is hard coded]
-//
+//      sobel_gpu [number of threads per block]
+// if no argument (number of threads per block) is passed, the hard coded value
+// 256 is used and the number of block is 1 as hard coded.
 
 #include <iostream>
 #include <vector>
@@ -13,7 +14,6 @@
 #include <math.h>
 
 // see https://en.wikipedia.org/wiki/Sobel_operator
-
 
 // easy-to-find and change variables for the input.
 // specify the name of a file containing data to be read in as bytes, along with 
@@ -55,14 +55,65 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=t
 
 // see https://en.wikipedia.org/wiki/Sobel_operator
 //
-__device__ float
-sobel_filtered_pixel(float *s, int i, int j , int rows, int cols, float *gx, float *gy)
+__device__ 
+float sobel_filtered_pixel(float *s, int i, int j , int rows, int cols, float *gx, float *gy)
 {
 
    float t=0.0;
 
    // ADD CODE HERE:  add your code here for computing the sobel stencil computation at location (i,j)
    // of input s, returning a float
+
+   int s_loc = i * cols + j;
+   float Gx = 0.0f, Gy = 0.0f;
+
+   if (i == 0 && j == 0)
+   {
+      Gx += gx[4]*s[s_loc] + gx[5]*s[s_loc+1] + gx[7]*s[s_loc+dims[0]] + gx[8]*s[s_loc+dims[0]+1];
+      Gy += gy[4]*s[s_loc] + gy[5]*s[s_loc+1] + gy[7]*s[s_loc+dims[0]] + gy[8]*s[s_loc+dims[0]+1];
+   }
+   else if (i == 0 && j < dims[0]-1)
+   {
+      Gx += gx[3]*s[s_loc-1] + gx[4]*s[s_loc] + gx[5]*s[s_loc+1] + gx[6]*s[s_loc+dims[0]-1] + gx[7]*s[s_loc+dims[0]] + gx[8]*s[s_loc+dims[0]+1];
+      Gy += gy[3]*s[s_loc-1] + gy[4]*s[s_loc] + gy[5]*s[s_loc+1] + gy[6]*s[s_loc+dims[0]-1] + gy[7]*s[s_loc+dims[0]] + gy[8]*s[s_loc+dims[0]+1];
+   }
+   else if (i == 0 && j == dims[0]-1)
+   {
+      Gx += gx[3]*s[s_loc-1] + gx[4]*s[s_loc] + gx[6]*s[s_loc+dims[0]-1] + gx[7]*s[s_loc+dims[0]];
+      Gy += gy[3]*s[s_loc-1] + gy[4]*s[s_loc] + gy[6]*s[s_loc+dims[0]-1] + gy[7]*s[s_loc+dims[0]];
+   }
+   else if (i > 0 && i < dims[1]-1 && j == 0)
+   {
+      Gx += gx[1]*s[s_loc-dims[0]] + gx[2]*s[s_loc-(dims[0]+1)] + gx[4]*s[s_loc] + gx[5]*s[s_loc+1] + gx[7]*s[s_loc+dims[0]] + gx[8]*s[s_loc+dims[0]+1];
+      Gy += gy[1]*s[s_loc-dims[0]] + gy[2]*s[s_loc-(dims[0]+1)] + gy[4]*s[s_loc] + gy[5]*s[s_loc+1] + gy[7]*s[s_loc+dims[0]] + gy[8]*s[s_loc+dims[0]+1];
+   }
+   else if (i == dims[1]-1 && j == 0)
+   {
+      Gx += gx[1]*s[s_loc-dims[0]] + gx[2]*s[s_loc-(dims[0]+1)] + gx[4]*s[s_loc] + gx[5]*s[s_loc+1];
+      Gy += gy[1]*s[s_loc-dims[0]] + gy[2]*s[s_loc-(dims[0]+1)] + gy[4]*s[s_loc] + gy[5]*s[s_loc+1];
+   }
+   else if (i == dims[1]-1 && j > 0 && j < dims[0]-1)
+   {
+      Gx += gx[0]*s[s_loc-dims[0]-1] + gx[1]*s[s_loc-dims[0]] + gx[2]*s[s_loc-(dims[0]+1)] + gx[3]*s[s_loc-1] + gx[4]*s[s_loc] + gx[5]*s[s_loc+1];
+      Gy += gy[0]*s[s_loc-dims[0]-1] + gy[1]*s[s_loc-dims[0]] + gy[2]*s[s_loc-(dims[0]+1)] + gy[3]*s[s_loc-1] + gy[4]*s[s_loc] + gy[5]*s[s_loc+1];
+   }
+   else if (i == dims[1]-1 && j == dims[0]-1)
+   {
+      Gx += gx[0]*s[s_loc-dims[0]-1] + gx[1]*s[s_loc-dims[0]] + gx[3]*s[s_loc-1] + gx[4]*s[s_loc];
+      Gy += gy[0]*s[s_loc-dims[0]-1] + gy[1]*s[s_loc-dims[0]] + gy[3]*s[s_loc-1] + gy[4]*s[s_loc];
+   }
+   else if (i > 0 && i < dims[1] -1 && j == dims[0]-1)
+   {
+      Gx += gx[0]*s[s_loc-dims[0]-1] + gx[1]*s[s_loc-dims[0]] + gx[3]*s[s_loc-1] + gx[4]*s[s_loc] + gx[6]*s[s_loc+dims[0]-1] + gx[7]*s[s_loc+dims[0]];
+      Gy += gy[0]*s[s_loc-dims[0]-1] + gy[1]*s[s_loc-dims[0]] + gy[3]*s[s_loc-1] + gy[4]*s[s_loc] + gy[6]*s[s_loc+dims[0]-1] + gy[7]*s[s_loc+dims[0]];
+   }
+   else
+   {
+      Gx += gx[0]*s[s_loc-dims[0]-1] + gx[1]*s[s_loc-dims[0]] + gx[2]*s[s_loc-(dims[0]+1)] + gx[3]*s[s_loc-1] + gx[4]*s[s_loc] + gx[5]*s[s_loc+1] + gx[6]*s[s_loc+dims[0]-1] + gx[7]*s[s_loc+dims[0]] + gx[8]*s[s_loc+dims[0]+1];
+      Gy += gy[0]*s[s_loc-dims[0]-1] + gy[1]*s[s_loc-dims[0]] + gy[2]*s[s_loc-(dims[0]+1)] + gy[3]*s[s_loc-1] + gy[4]*s[s_loc] + gy[5]*s[s_loc+1] + gy[6]*s[s_loc+dims[0]-1] + gy[7]*s[s_loc+dims[0]] + gy[8]*s[s_loc+dims[0]+1];
+   }
+   
+   t = sqrt(Gx*Gx + Gy*Gy);
 
    return t;
 }
@@ -82,23 +133,34 @@ sobel_filtered_pixel(float *s, int i, int j , int rows, int cols, float *gx, flo
 //
 
 
-__global__ void
-sobel_kernel_gpu(float *s,  // source image pixels
-      float *d,  // dst image pixels
-      int n,  // size of image cols*rows,
-      int rows,
-      int cols,
-      float *gx, float *gy) // gx and gy are stencil weights for the sobel filter
+__global__ 
+void sobel_kernel_gpu(float *s,  // source image pixels
+                      float *d,  // dst image pixels
+                      int n,     // size of image cols*rows,
+                      int rows,
+                      int cols,
+                      float *gx, float *gy) // gx and gy are stencil weights for the sobel filter
 {
    // ADD CODE HERE: insert your code here that iterates over every (i,j) of input,  makes a call
    // to sobel_filtered_pixel, and assigns the resulting value at location (i,j) in the output.
 
    // because this is CUDA, you need to use CUDA built-in variables to compute an index and stride
    // your processing motif will be very similar here to that we used for vector add in Lab #2
+
+   int index = blockIdx.x * blockDim.x + threadIdx.x;
+   int stride = blockDim.x * gridDim.x;
+
+   for (int i = index; i < n; i+=stride)
+   {
+      //for (int j = 0; j < cols; j++)
+      //{
+         //d[i*cols+j] = sobel_filtered_pixel(s, i, j, rows, cols, gx, gy);
+         d[i] = sobel_filtered_pixel(s, i / cols, i % cols, rows, cols, gx, gy);
+      //}
+   }
 }
 
-int
-main (int ac, char *av[])
+int main (int ac, char *av[])
 {
    // input, output file names hard coded at top of file
 
@@ -157,9 +219,13 @@ main (int ac, char *av[])
    int nBlocks=1, nThreadsPerBlock=256;
 
    // ADD CODE HERE: insert your code here to set a different number of thread blocks or # of threads per block
-
-
-
+   
+   if (ac > 1)
+   {
+      nThreadsPerBlock = atoi(av[1]);
+      nBlocks = (nvalues + nThreadsPerBlock -1) / nThreadsPerBlock;
+   }
+   
    printf(" GPU configuration: %d blocks, %d threads per block \n", nBlocks, nThreadsPerBlock);
 
    // invoke the kernel on the device

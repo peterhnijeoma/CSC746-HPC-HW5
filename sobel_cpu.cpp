@@ -32,23 +32,71 @@ char output_fname[] = "../data/processed-raw-int8-4x-cpu.dat";
 // sobel_filtered_pixel(): perform the sobel filtering at a given i,j location
 //
 // input: float *s - the source data
-// input: int i,j - the location of the pixel in the source data where we want to center our sobel convolution
+// input: int i,j - the location of the pixel in the source data where we want
+          // to center our sobel convolution
 // input: int rows, cols: the dimensions of the input and output image buffers
-// input: float *gx, gy:  arrays of length 9 each, these are logically 3x3 arrays of sobel filter weights
+// input: float *gx, gy:  arrays of length 9 each, these are logically 3x3 arrays
+          // of sobel filter weights
 //
 // this routine computes Gx=gx*s centered at (i,j), Gy=gy*s centered at (i,j),
 // and returns G = sqrt(Gx^2 + Gy^2)
 
 // see https://en.wikipedia.org/wiki/Sobel_operator
 //
-float
-sobel_filtered_pixel(float *s, int i, int j , int dims[], float *gx, float *gy)
+float sobel_filtered_pixel(float *s, int i, int j , int dims[], float *gx, float *gy)
 {
    float t=0.0;
 
-   // ADD CODE HERE: add your code here for computing the sobel stencil computation at location (i,j)
-   // of input s, returning a float
+   int s_index = i * dims[0] + j; // s index at [i,j] the center
+   float Gx, Gy;
 
+   // if (i == 0 && j == 0)
+   // {
+   //    Gx += gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[7]*s[s_index+dims[0]] + gx[8]*s[s_index+dims[0]+1];
+   //    Gy += gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[7]*s[s_index+dims[0]] + gy[8]*s[s_index+dims[0]+1];
+   // }
+   // else if (i == 0 && j < dims[0]-1)
+   // {
+   //    Gx += gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[6]*s[s_index+dims[0]-1] + gx[7]*s[s_index+dims[0]] + gx[8]*s[s_index+dims[0]+1];
+   //    Gy += gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[6]*s[s_index+dims[0]-1] + gy[7]*s[s_index+dims[0]] + gy[8]*s[s_index+dims[0]+1];
+   // }
+   // else if (i == 0 && j == dims[0]-1)
+   // {
+   //    Gx += gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[6]*s[s_index+dims[0]-1] + gx[7]*s[s_index+dims[0]];
+   //    Gy += gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[6]*s[s_index+dims[0]-1] + gy[7]*s[s_index+dims[0]];
+   // }
+   // else if (i > 0 && i < dims[1]-1 && j == 0)
+   // {
+   //    Gx += gx[1]*s[s_index-dims[0]] + gx[2]*s[s_index-(dims[0]+1)] + gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[7]*s[s_index+dims[0]] + gx[8]*s[s_index+dims[0]+1];
+   //    Gy += gy[1]*s[s_index-dims[0]] + gy[2]*s[s_index-(dims[0]+1)] + gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[7]*s[s_index+dims[0]] + gy[8]*s[s_index+dims[0]+1];
+   // }
+   // else if (i == dims[1]-1 && j == 0)
+   // {
+   //    Gx += gx[1]*s[s_index-dims[0]] + gx[2]*s[s_index-(dims[0]+1)] + gx[4]*s[s_index] + gx[5]*s[s_index+1];
+   //    Gy += gy[1]*s[s_index-dims[0]] + gy[2]*s[s_index-(dims[0]+1)] + gy[4]*s[s_index] + gy[5]*s[s_index+1];
+   // }
+   // else if (i == dims[1]-1 && j > 0 && j < dims[0]-1)
+   // {
+   //    Gx += gx[0]*s[s_index-dims[0]-1] + gx[1]*s[s_index-dims[0]] + gx[2]*s[s_index-(dims[0]+1)] + gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[5]*s[s_index+1];
+   //    Gy += gy[0]*s[s_index-dims[0]-1] + gy[1]*s[s_index-dims[0]] + gy[2]*s[s_index-(dims[0]+1)] + gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[5]*s[s_index+1];
+   // }
+   // else if (i == dims[1]-1 && j == dims[0]-1)
+   // {
+   //    Gx += gx[0]*s[s_index-dims[0]-1] + gx[1]*s[s_index-dims[0]] + gx[3]*s[s_index-1] + gx[4]*s[s_index];
+   //    Gy += gy[0]*s[s_index-dims[0]-1] + gy[1]*s[s_index-dims[0]] + gy[3]*s[s_index-1] + gy[4]*s[s_index];
+   // }
+   // else if (i > 0 && i < dims[1] -1 && j == dims[0]-1)
+   // {
+   //    Gx += gx[0]*s[s_index-dims[0]-1] + gx[1]*s[s_index-dims[0]] + gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[6]*s[s_index+dims[0]-1] + gx[7]*s[s_index+dims[0]];
+   //    Gy += gy[0]*s[s_index-dims[0]-1] + gy[1]*s[s_index-dims[0]] + gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[6]*s[s_index+dims[0]-1] + gy[7]*s[s_index+dims[0]];
+   // }
+   // else
+   // {
+      Gx = gx[0]*s[s_index-dims[0]-1] + gx[1]*s[s_index-dims[0]] + gx[2]*s[s_index-(dims[0]+1)] + gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[6]*s[s_index+dims[0]-1] + gx[7]*s[s_index+dims[0]] + gx[8]*s[s_index+dims[0]+1];
+      Gy = gy[0]*s[s_index-dims[0]-1] + gy[1]*s[s_index-dims[0]] + gy[2]*s[s_index-(dims[0]+1)] + gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[6]*s[s_index+dims[0]-1] + gy[7]*s[s_index+dims[0]] + gy[8]*s[s_index+dims[0]+1];
+   //}
+   
+   t = sqrt(Gx*Gx + Gy*Gy);
    return t;
 }
 
@@ -59,14 +107,15 @@ sobel_filtered_pixel(float *s, int i, int j , int dims[], float *gx, float *gy)
 //  sobel filtered output pixel at location (i,j) in output.
 //
 // input: float *s - the source data, size=rows*cols
-// input: int i,j - the location of the pixel in the source data where we want to center our sobel convolution
+// input: int i,j - the location of the pixel in the source data where we want to
+// center our sobel convolution
 // input: int rows, cols: the dimensions of the input and output image buffers
-// input: float *gx, gy:  arrays of length 9 each, these are logically 3x3 arrays of sobel filter weights
+// input: float *gx, gy:  arrays of length 9 each, these are logically 3x3 arrays
+// of sobel filter weights
 // output: float *d - the buffer for the output, size=rows*cols.
 //
 
-void
-do_sobel_filtering(float *in, float *out, int dims[2])
+void do_sobel_filtering(float *in, float *out, int dims[2])
 {
    float Gx[] = {1.0, 0.0, -1.0, 2.0, 0.0, -2.0, 1.0, 0.0, -1.0};
    float Gy[] = {1.0, 2.0, 1.0, 0.0, 0.0, 0.0, -1.0, -2.0, -1.0};
@@ -74,17 +123,31 @@ do_sobel_filtering(float *in, float *out, int dims[2])
    // ADD CODE HERE: insert your code here that iterates over every (i,j) of input,  makes a call
    // to sobel_filtered_pixel, and assigns the resulting value at location (i,j) in the output.
 
+   // initialize the out array to 0.0 since we will skip the edges of the source image
+   #pragma omp parallel for
+   for (int i = 0; i < dims[0]*dims[1]; i++)
+   {
+      out[i] = 0.0;
+   }
+   #pragma omp barrier
+
+   #pragma omp parallel for collapse(2)
+   for (int i = 1; i < dims[1]-1; i++)     // skip the edges by starting at row index 1
+   {
+      for (int j = 1; j < dims[0]-1; j++)  // skip the edges by starting at column index 1
+      {
+         out[i*dims[0]+j] = sobel_filtered_pixel(in, i, j, dims, gx, gy);
+      }
+   }
 }
 
-
-int
-main (int ac, char *av[])
+int main (int ac, char *av[])
 {
    // filenames, etc, hard coded at the top of the file
    // load input data
-//    char input_fname[]="../data/zebra-gray-raw-int8.dat";
-//   int data_dims[2] = {3556, 2573};
-//   char output_fname[] = "../data/processed-raw-int8-cpu.dat";
+   // char input_fname[]="../data/zebra-gray-raw-int8.dat";
+   // int data_dims[2] = {3556, 2573};
+   // char output_fname[] = "../data/processed-raw-int8-cpu.dat";
 
    off_t nvalues = data_dims[0]*data_dims[1];
    unsigned char *in_data_bytes = (unsigned char *)malloc(sizeof(unsigned char)*nvalues);

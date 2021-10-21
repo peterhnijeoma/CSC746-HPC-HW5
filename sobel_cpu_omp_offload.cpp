@@ -1,5 +1,5 @@
 //
-// (C) 2021, E. Wes Bethel
+// (C) 2021, E. Wes Bethel and Peter Ijeoma
 // sobel_cpu_omp_offload.cpp
 // usage:
 //      sobel_cpu_omp_offload [no args, all is hard coded]
@@ -43,14 +43,21 @@ char output_fname[] = "../data/processed-raw-int8-4x-omp-offload.dat";
 
 // see https://en.wikipedia.org/wiki/Sobel_operator
 //
-float
-sobel_filtered_pixel(float *s, int i, int j , int width, int height, float *gx, float *gy)
+float sobel_filtered_pixel(float *s, int i, int j , int width, int height, float *gx, float *gy)
 {
 
-   float t=0.0;
+   float t = 0.0;
 
    // ADD CODE HERE: add your code here for computing the sobel stencil computation at location (i,j)
    // of input s, returning a float
+
+   int s_loc = i * width + j;  // s index at [i.j], the center
+   float Gx, Gy;
+
+   Gx = gx[0]*s[s_loc-dims[0]-1] + gx[1]*s[s_loc-dims[0]] + gx[2]*s[s_loc-(dims[0]+1)] + gx[3]*s[s_loc-1] + gx[4]*s[s_loc] + gx[5]*s[s_loc+1] + gx[6]*s[s_loc+dims[0]-1] + gx[7]*s[s_loc+dims[0]] + gx[8]*s[s_loc+dims[0]+1];
+   Gy = gy[0]*s[s_loc-dims[0]-1] + gy[1]*s[s_loc-dims[0]] + gy[2]*s[s_loc-(dims[0]+1)] + gy[3]*s[s_loc-1] + gy[4]*s[s_loc] + gy[5]*s[s_loc+1] + gy[6]*s[s_loc+dims[0]-1] + gy[7]*s[s_loc+dims[0]] + gy[8]*s[s_loc+dims[0]+1];
+      
+   t = sqrt(Gx*Gx + Gy*Gy);
 
    return t;
 }
@@ -66,8 +73,8 @@ sobel_filtered_pixel(float *s, int i, int j , int width, int height, float *gx, 
 // input: float *gx, gy:  arrays of length 9 each, these are logically 3x3 arrays of sobel filter weights
 // output: float *d - the buffer for the output, size=rows*cols.
 //
-void
-do_sobel_filtering(float *in, float *out, int dims[2])
+
+void do_sobel_filtering(float *in, float *out, int dims[2])
 {
    float Gx[] = {1.0, 0.0, -1.0, 2.0, 0.0, -2.0, 1.0, 0.0, -1.0};
    float Gy[] = {1.0, 2.0, 1.0, 0.0, 0.0, 0.0, -1.0, -2.0, -1.0};
@@ -85,22 +92,38 @@ do_sobel_filtering(float *in, float *out, int dims[2])
 
 // ADD CODE HERE: you will need to add one more item to this line to map the "out" data array such that 
 // it is returned from the the device after the computation is complete. everything else here is input.
-#pragma omp target data map(to:in[0:nvals]) map(to:width) map(to:height) map(to:Gx[0:9]) map(to:Gy[0:9]) 
+#pragma omp target data map(to:in[0:nvals]) map(to:width) map(to:height) map(to:Gx[0:9]) map(to:Gy[0:9]) map(tofrom:out[0:nvals])
    {
 
-   // ADD CODE HERE: insert your code here that iterates over every (i,j) of input,  makes a call
-   // to sobel_filtered_pixel, and assigns the resulting value at location (i,j) in the output.
+       // ADD CODE HERE: insert your code here that iterates over every (i,j) of input,  makes a call
+       // to sobel_filtered_pixel, and assigns the resulting value at location (i,j) in the output.
    
-   // don't forget to include a  #pragma omp target teams parallel for around those loop(s).
-   // You may also wish to consider additional clauses that might be appropriate here to increase parallelism 
-   // if you are using nested loops.
+       // don't forget to include a  #pragma omp target teams parallel for around those loop(s).
+       // You may also wish to consider additional clauses that might be appropriate here to increase parallelism 
+       // if you are using nested loops.
 
+       // initialize out values to 0.0 since we wil skip the edges of the source data
+       #pragma omp target teams distribute parallel for
+       for (int i = 0; i < nvals; i++)
+       {
+          out[i] = 0.0;
+       }
+       
+       #pragma omp barier
+
+       #pragma omp target teams distribute parallel for collapse(2)
+       for (int i = 1; i < dims[1]-1; i++)     // skip the edges of the data
+       {
+          for (int j = 1; j < dims[0]-1; j++)  // skip the edges of the data
+          {
+             out[i*width+j] = sobel_filtered_pixel(in, i, j, width, height, Gx, Gy);
+          }
+       }
    } // pragma omp target data
 }
 
 
-int
-main (int ac, char *av[])
+int main (int ac, char *av[])
 {
    // filenames, etc, hard coded at the top of the file
    // load input data
