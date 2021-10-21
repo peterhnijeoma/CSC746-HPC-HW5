@@ -136,7 +136,7 @@ void do_sobel_filtering(float *in, float *out, int dims[2])
    {
       for (int j = 1; j < dims[0]-1; j++)  // skip the edges by starting at column index 1
       {
-         out[i*dims[0]+j] = sobel_filtered_pixel(in, i, j, dims, gx, gy);
+         out[i*dims[0]+j] = sobel_filtered_pixel(in, i, j, dims, Gx, Gy);
       }
    }
 }
