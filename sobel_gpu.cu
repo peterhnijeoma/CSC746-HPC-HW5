@@ -82,27 +82,27 @@ float sobel_filtered_pixel(float *s, int i, int j , int rows, int cols, float *g
       Gx += gx[3]*s[s_loc-1] + gx[4]*s[s_loc] + gx[6]*s[s_loc+cols-1] + gx[7]*s[s_loc+cols];
       Gy += gy[3]*s[s_loc-1] + gy[4]*s[s_loc] + gy[6]*s[s_loc+cols-1] + gy[7]*s[s_loc+cols];
    }
-   else if (i > 0 && i < dims[1]-1 && j == 0)
+   else if (i > 0 && i < rows-1 && j == 0)
    {
       Gx += gx[1]*s[s_loc-cols] + gx[2]*s[s_loc-(cols+1)] + gx[4]*s[s_loc] + gx[5]*s[s_loc+1] + gx[7]*s[s_loc+cols] + gx[8]*s[s_loc+cols+1];
       Gy += gy[1]*s[s_loc-cols] + gy[2]*s[s_loc-(cols+1)] + gy[4]*s[s_loc] + gy[5]*s[s_loc+1] + gy[7]*s[s_loc+cols] + gy[8]*s[s_loc+cols+1];
    }
-   else if (i == dims[1]-1 && j == 0)
+   else if (i == rows-1 && j == 0)
    {
       Gx += gx[1]*s[s_loc-cols] + gx[2]*s[s_loc-(cols+1)] + gx[4]*s[s_loc] + gx[5]*s[s_loc+1];
       Gy += gy[1]*s[s_loc-cols] + gy[2]*s[s_loc-(cols+1)] + gy[4]*s[s_loc] + gy[5]*s[s_loc+1];
    }
-   else if (i == dims[1]-1 && j > 0 && j < cols-1)
+   else if (i == rows-1 && j > 0 && j < cols-1)
    {
       Gx += gx[0]*s[s_loc-cols-1] + gx[1]*s[s_loc-cols] + gx[2]*s[s_loc-(cols+1)] + gx[3]*s[s_loc-1] + gx[4]*s[s_loc] + gx[5]*s[s_loc+1];
       Gy += gy[0]*s[s_loc-cols-1] + gy[1]*s[s_loc-cols] + gy[2]*s[s_loc-(cols+1)] + gy[3]*s[s_loc-1] + gy[4]*s[s_loc] + gy[5]*s[s_loc+1];
    }
-   else if (i == dims[1]-1 && j == cols-1)
+   else if (i == rows-1 && j == cols-1)
    {
       Gx += gx[0]*s[s_loc-cols-1] + gx[1]*s[s_loc-cols] + gx[3]*s[s_loc-1] + gx[4]*s[s_loc];
       Gy += gy[0]*s[s_loc-cols-1] + gy[1]*s[s_loc-cols] + gy[3]*s[s_loc-1] + gy[4]*s[s_loc];
    }
-   else if (i > 0 && i < dims[1] -1 && j == cols-1)
+   else if (i > 0 && i < rows -1 && j == cols-1)
    {
       Gx += gx[0]*s[s_loc-cols-1] + gx[1]*s[s_loc-cols] + gx[3]*s[s_loc-1] + gx[4]*s[s_loc] + gx[6]*s[s_loc+cols-1] + gx[7]*s[s_loc+cols];
       Gy += gy[0]*s[s_loc-cols-1] + gy[1]*s[s_loc-cols] + gy[3]*s[s_loc-1] + gy[4]*s[s_loc] + gy[6]*s[s_loc+cols-1] + gy[7]*s[s_loc+cols];
@@ -165,7 +165,7 @@ int main (int ac, char *av[])
    // input, output file names hard coded at top of file
 
    // load the input file
-   off_t nvalues = data_cols*data_dims[1];
+   off_t nvalues = data_dims[0]*data_dims[1];
    unsigned char *in_data_bytes = (unsigned char *)malloc(sizeof(unsigned char)*nvalues);
 
    FILE *f = fopen(input_fname,"r");
@@ -229,7 +229,7 @@ int main (int ac, char *av[])
    printf(" GPU configuration: %d blocks, %d threads per block \n", nBlocks, nThreadsPerBlock);
 
    // invoke the kernel on the device
-   sobel_kernel_gpu<<<nBlocks, nThreadsPerBlock>>>(in_data_floats, out_data_floats, nvalues, data_dims[1], data_cols, device_gx, device_gy);
+   sobel_kernel_gpu<<<nBlocks, nThreadsPerBlock>>>(in_data_floats, out_data_floats, nvalues, data_rows, data_cols, device_gx, device_gy);
 
    // wait for it to finish, check errors
    gpuErrchk (  cudaDeviceSynchronize() );
