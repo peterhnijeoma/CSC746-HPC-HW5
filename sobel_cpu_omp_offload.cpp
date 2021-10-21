@@ -131,7 +131,7 @@ int main (int ac, char *av[])
 //   int data_dims[2] = {3556, 2573};
 //   char output_fname[] = "../data/processed-raw-int8-cpu.dat";
 
-   off_t nvalues = data_width*data_dims[1];
+   off_t nvalues = data_dims[0]*data_dims[1];
    unsigned char *in_data_bytes = (unsigned char *)malloc(sizeof(unsigned char)*nvalues);
 
    FILE *f = fopen(input_fname,"r");
