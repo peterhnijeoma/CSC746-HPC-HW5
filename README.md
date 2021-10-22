@@ -33,6 +33,8 @@
 
 2. for GPU code - cuda and OpenMP with device offload
 
+
+
 % ../scripts/gpu-batch-script.sh
 
 

@@ -232,7 +232,8 @@ int main (int ac, char *av[])
    sobel_kernel_gpu<<<nBlocks, nThreadsPerBlock>>>(in_data_floats, out_data_floats, nvalues, data_dims[1], data_dims[0], device_gx, device_gy);
 
    // wait for it to finish, check errors
-   gpuErrchk (  cudaDeviceSynchronize() );
+   //gpuErrchk (cudaDeviceSynchronize());
+   cudaDeviceSynchronize();
 
    // write output after converting from floats in range 0..1 to bytes in range 0..255
    unsigned char *out_data_bytes = in_data_bytes;  // just reuse the buffer from before
