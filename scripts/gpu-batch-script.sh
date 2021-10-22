@@ -15,7 +15,13 @@ export LIBOMPTARGET_INFO=4
 # it is assumed your environment is set up properly for using the Cori GPUs
 # prior to you launching this batch script
 #
-nvprof -m sm_efficiency ./sobel_gpu
+for nB in 1 4 16 64 256 1024 4096
+  do
+    for nT in 32 64 128 256 512 1024
+      do
+         nvprof -m sm_efficiency ./sobel_gpu $nT $nB
+    done
+done
 
 nvprof -m sm_efficiency ./sobel_cpu_omp_offload
 

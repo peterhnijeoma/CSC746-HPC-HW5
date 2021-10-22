@@ -64,53 +64,53 @@ float sobel_filtered_pixel(float *s, int i, int j , int rows, int cols, float *g
    // ADD CODE HERE:  add your code here for computing the sobel stencil computation at location (i,j)
    // of input s, returning a float
 
-   int s_loc = i * cols + j;
+   int s_index = i * cols + j;  // s index at [i,j] - the center
    float Gx = 0.0f, Gy = 0.0f;
 
    if (i == 0 && j == 0)
    {
-      Gx += gx[4]*s[s_loc] + gx[5]*s[s_loc+1] + gx[7]*s[s_loc+cols] + gx[8]*s[s_loc+cols+1];
-      Gy += gy[4]*s[s_loc] + gy[5]*s[s_loc+1] + gy[7]*s[s_loc+cols] + gy[8]*s[s_loc+cols+1];
+      Gx += gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[7]*s[s_index+cols] + gx[8]*s[s_index+cols+1];
+      Gy += gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[7]*s[s_index+cols] + gy[8]*s[s_index+cols+1];
    }
    else if (i == 0 && j < cols-1)
    {
-      Gx += gx[3]*s[s_loc-1] + gx[4]*s[s_loc] + gx[5]*s[s_loc+1] + gx[6]*s[s_loc+cols-1] + gx[7]*s[s_loc+cols] + gx[8]*s[s_loc+cols+1];
-      Gy += gy[3]*s[s_loc-1] + gy[4]*s[s_loc] + gy[5]*s[s_loc+1] + gy[6]*s[s_loc+cols-1] + gy[7]*s[s_loc+cols] + gy[8]*s[s_loc+cols+1];
+      Gx += gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[6]*s[s_index+cols-1] + gx[7]*s[s_index+cols] + gx[8]*s[s_index+cols+1];
+      Gy += gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[6]*s[s_index+cols-1] + gy[7]*s[s_index+cols] + gy[8]*s[s_index+cols+1];
    }
    else if (i == 0 && j == cols-1)
    {
-      Gx += gx[3]*s[s_loc-1] + gx[4]*s[s_loc] + gx[6]*s[s_loc+cols-1] + gx[7]*s[s_loc+cols];
-      Gy += gy[3]*s[s_loc-1] + gy[4]*s[s_loc] + gy[6]*s[s_loc+cols-1] + gy[7]*s[s_loc+cols];
+      Gx += gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[6]*s[s_index+cols-1] + gx[7]*s[s_index+cols];
+      Gy += gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[6]*s[s_index+cols-1] + gy[7]*s[s_index+cols];
    }
    else if (i > 0 && i < rows-1 && j == 0)
    {
-      Gx += gx[1]*s[s_loc-cols] + gx[2]*s[s_loc-(cols+1)] + gx[4]*s[s_loc] + gx[5]*s[s_loc+1] + gx[7]*s[s_loc+cols] + gx[8]*s[s_loc+cols+1];
-      Gy += gy[1]*s[s_loc-cols] + gy[2]*s[s_loc-(cols+1)] + gy[4]*s[s_loc] + gy[5]*s[s_loc+1] + gy[7]*s[s_loc+cols] + gy[8]*s[s_loc+cols+1];
+      Gx += gx[1]*s[s_index-cols] + gx[2]*s[s_index-(cols+1)] + gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[7]*s[s_index+cols] + gx[8]*s[s_index+cols+1];
+      Gy += gy[1]*s[s_index-cols] + gy[2]*s[s_index-(cols+1)] + gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[7]*s[s_index+cols] + gy[8]*s[s_index+cols+1];
    }
    else if (i == rows-1 && j == 0)
    {
-      Gx += gx[1]*s[s_loc-cols] + gx[2]*s[s_loc-(cols+1)] + gx[4]*s[s_loc] + gx[5]*s[s_loc+1];
-      Gy += gy[1]*s[s_loc-cols] + gy[2]*s[s_loc-(cols+1)] + gy[4]*s[s_loc] + gy[5]*s[s_loc+1];
+      Gx += gx[1]*s[s_index-cols] + gx[2]*s[s_index-(cols+1)] + gx[4]*s[s_index] + gx[5]*s[s_index+1];
+      Gy += gy[1]*s[s_index-cols] + gy[2]*s[s_index-(cols+1)] + gy[4]*s[s_index] + gy[5]*s[s_index+1];
    }
    else if (i == rows-1 && j > 0 && j < cols-1)
    {
-      Gx += gx[0]*s[s_loc-cols-1] + gx[1]*s[s_loc-cols] + gx[2]*s[s_loc-(cols+1)] + gx[3]*s[s_loc-1] + gx[4]*s[s_loc] + gx[5]*s[s_loc+1];
-      Gy += gy[0]*s[s_loc-cols-1] + gy[1]*s[s_loc-cols] + gy[2]*s[s_loc-(cols+1)] + gy[3]*s[s_loc-1] + gy[4]*s[s_loc] + gy[5]*s[s_loc+1];
+      Gx += gx[0]*s[s_index-cols-1] + gx[1]*s[s_index-cols] + gx[2]*s[s_index-(cols+1)] + gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[5]*s[s_index+1];
+      Gy += gy[0]*s[s_index-cols-1] + gy[1]*s[s_index-cols] + gy[2]*s[s_index-(cols+1)] + gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[5]*s[s_index+1];
    }
    else if (i == rows-1 && j == cols-1)
    {
-      Gx += gx[0]*s[s_loc-cols-1] + gx[1]*s[s_loc-cols] + gx[3]*s[s_loc-1] + gx[4]*s[s_loc];
-      Gy += gy[0]*s[s_loc-cols-1] + gy[1]*s[s_loc-cols] + gy[3]*s[s_loc-1] + gy[4]*s[s_loc];
+      Gx += gx[0]*s[s_index-cols-1] + gx[1]*s[s_index-cols] + gx[3]*s[s_index-1] + gx[4]*s[s_index];
+      Gy += gy[0]*s[s_index-cols-1] + gy[1]*s[s_index-cols] + gy[3]*s[s_index-1] + gy[4]*s[s_index];
    }
    else if (i > 0 && i < rows -1 && j == cols-1)
    {
-      Gx += gx[0]*s[s_loc-cols-1] + gx[1]*s[s_loc-cols] + gx[3]*s[s_loc-1] + gx[4]*s[s_loc] + gx[6]*s[s_loc+cols-1] + gx[7]*s[s_loc+cols];
-      Gy += gy[0]*s[s_loc-cols-1] + gy[1]*s[s_loc-cols] + gy[3]*s[s_loc-1] + gy[4]*s[s_loc] + gy[6]*s[s_loc+cols-1] + gy[7]*s[s_loc+cols];
+      Gx += gx[0]*s[s_index-cols-1] + gx[1]*s[s_index-cols] + gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[6]*s[s_index+cols-1] + gx[7]*s[s_index+cols];
+      Gy += gy[0]*s[s_index-cols-1] + gy[1]*s[s_index-cols] + gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[6]*s[s_index+cols-1] + gy[7]*s[s_index+cols];
    }
    else
    {
-      Gx += gx[0]*s[s_loc-cols-1] + gx[1]*s[s_loc-cols] + gx[2]*s[s_loc-(cols+1)] + gx[3]*s[s_loc-1] + gx[4]*s[s_loc] + gx[5]*s[s_loc+1] + gx[6]*s[s_loc+cols-1] + gx[7]*s[s_loc+cols] + gx[8]*s[s_loc+cols+1];
-      Gy += gy[0]*s[s_loc-cols-1] + gy[1]*s[s_loc-cols] + gy[2]*s[s_loc-(cols+1)] + gy[3]*s[s_loc-1] + gy[4]*s[s_loc] + gy[5]*s[s_loc+1] + gy[6]*s[s_loc+cols-1] + gy[7]*s[s_loc+cols] + gy[8]*s[s_loc+cols+1];
+      Gx += gx[0]*s[s_index-cols-1] + gx[1]*s[s_index-cols] + gx[2]*s[s_index-(cols+1)] + gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[6]*s[s_index+cols-1] + gx[7]*s[s_index+cols] + gx[8]*s[s_index+cols+1];
+      Gy += gy[0]*s[s_index-cols-1] + gy[1]*s[s_index-cols] + gy[2]*s[s_index-(cols+1)] + gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[6]*s[s_index+cols-1] + gy[7]*s[s_index+cols] + gy[8]*s[s_index+cols+1];
    }
    
    t = sqrt(Gx*Gx + Gy*Gy);
