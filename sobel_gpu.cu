@@ -155,7 +155,8 @@ void sobel_kernel_gpu(float *s,  // source image pixels
       //for (int j = 0; j < cols; j++)
       //{
          //d[i*cols+j] = sobel_filtered_pixel(s, i, j, rows, cols, gx, gy);
-         d[i] = sobel_filtered_pixel(s, i / cols, i % cols, rows, cols, gx, gy);
+         //d[i] = sobel_filtered_pixel(s, i / cols, i % cols, rows, cols, gx, gy);
+         printf("in kernel - index is: %d, i is: %d, j is: %d \n", i, i/cols, i%cols);
       //}
    }
 }
@@ -224,6 +225,7 @@ int main (int ac, char *av[])
    {
       nThreadsPerBlock = atoi(av[1]);
       nBlocks = atoi(av[2]);
+      //nBlocks = (nvalues + nThreadsPerBlock -1)/nThreadsPerBlock;
    }
    
    printf(" GPU configuration: %d blocks, %d threads per block \n", nBlocks, nThreadsPerBlock);
@@ -232,8 +234,7 @@ int main (int ac, char *av[])
    sobel_kernel_gpu<<<nBlocks, nThreadsPerBlock>>>(in_data_floats, out_data_floats, nvalues, data_dims[1], data_dims[0], device_gx, device_gy);
 
    // wait for it to finish, check errors
-   //gpuErrchk (cudaDeviceSynchronize());
-   cudaDeviceSynchronize();
+   gpuErrchk (cudaDeviceSynchronize());
 
    // write output after converting from floats in range 0..1 to bytes in range 0..255
    unsigned char *out_data_bytes = in_data_bytes;  // just reuse the buffer from before
