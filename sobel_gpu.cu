@@ -93,7 +93,7 @@ float sobel_filtered_pixel(float *s, int i, int j , int rows, int cols, float *g
    }
    else if (i == rows-1 && j == 0)
    {
-      printf("in sobel filetering 5- i is: %d, j is: %d, s index is: %d \n", i, j, S_index);
+      printf("in sobel filetering 5- i is: %d, j is: %d, s index is: %d \n", i, j, s_index);
       Gx += gx[1]*s[s_index-cols] + gx[2]*s[s_index-(cols+1)] + gx[4]*s[s_index] + gx[5]*s[s_index+1];
       Gy += gy[1]*s[s_index-cols] + gy[2]*s[s_index-(cols+1)] + gy[4]*s[s_index] + gy[5]*s[s_index+1];
    }
