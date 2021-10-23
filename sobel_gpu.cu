@@ -155,8 +155,8 @@ void sobel_kernel_gpu(float *s,  // source image pixels
       //for (int j = 0; j < cols; j++)
       //{
          //d[i*cols+j] = sobel_filtered_pixel(s, i, j, rows, cols, gx, gy);
-         //d[i] = sobel_filtered_pixel(s, i / cols, i % cols, rows, cols, gx, gy);
-         printf("in kernel - index is: %d, i is: %d, j is: %d \n", i, i/cols, i%cols);
+         d[i] = sobel_filtered_pixel(s, i / cols, i % cols, rows, cols, gx, gy);
+         //printf("in kernel - index is: %d, i is: %d, j is: %d \n", i, i/cols, i%cols);
       //}
    }
 }
