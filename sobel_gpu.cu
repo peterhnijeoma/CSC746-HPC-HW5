@@ -119,15 +119,15 @@ float sobel_filtered_pixel(float *s, int i, int j , int rows, int cols, float *g
    else
    {
       printf("in sobel filetering 9- i is: %d, j is: %d, s index is: %d \n", i, j, s_index);
-      printf("9-0 - s at %d is %d\n", s_index-cols-1, s[s_index-cols-1]);
-      printf("9-1 - s at %d is %d\n", s_index-cols, s[s_index-cols]);
-      printf("9-2 - s at %d is %d\n", s_index-cols+1, s[s_index-cols+1]);
-      printf("9-3 - s at %d is %d\n", s_index-1, s[s_index-1]);
-      printf("9-4 - s at %d is %d\n", s_index, s[s_index]);
-      printf("9-5 - s at %d is %d\n", s_index+1, s[s_index+1]);
-      printf("9-6 - s at %d is %d\n", s_index+cols-1, s[s_index+cols-1]);
-      printf("9-7 - s at %d is %d\n", s_index+cols, s[s_index+cols]);
-      printf("9-8 - s at %d is %d\n", s_index+cols+1, s[s_index+cols+1]);
+      printf("9-0 - s at %d is %f\n", s_index-cols-1, s[s_index-cols-1]);
+      printf("9-1 - s at %d is %f\n", s_index-cols, s[s_index-cols]);
+      printf("9-2 - s at %d is %f\n", s_index-cols+1, s[s_index-cols+1]);
+      printf("9-3 - s at %d is %f\n", s_index-1, s[s_index-1]);
+      printf("9-4 - s at %d is %f\n", s_index, s[s_index]);
+      printf("9-5 - s at %d is %f\n", s_index+1, s[s_index+1]);
+      printf("9-6 - s at %d is %f\n", s_index+cols-1, s[s_index+cols-1]);
+      printf("9-7 - s at %d is %f\n", s_index+cols, s[s_index+cols]);
+      printf("9-8 - s at %d is %f\n", s_index+cols+1, s[s_index+cols+1]);
       Gx += gx[0]*s[s_index-cols-1] + gx[1]*s[s_index-cols] + gx[2]*s[s_index-cols+1] + gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[6]*s[s_index+cols-1] + gx[7]*s[s_index+cols] + gx[8]*s[s_index+cols+1];
       Gy += gy[0]*s[s_index-cols-1] + gy[1]*s[s_index-cols] + gy[2]*s[s_index-cols+1] + gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[6]*s[s_index+cols-1] + gy[7]*s[s_index+cols] + gy[8]*s[s_index+cols+1];
    }
