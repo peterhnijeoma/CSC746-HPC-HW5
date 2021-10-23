@@ -67,7 +67,7 @@ float sobel_filtered_pixel(float *s, int i, int j , int rows, int cols, float *g
    int s_index = i * cols + j;  // s index at [i,j] - the center
    float Gx = 0.0f, Gy = 0.0f;
 
-   if (i == 0 && j == 0)
+   /*if (i == 0 && j == 0)
    {
       Gx += gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[7]*s[s_index+cols] + gx[8]*s[s_index+cols+1];
       Gy += gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[7]*s[s_index+cols] + gy[8]*s[s_index+cols+1];
@@ -109,9 +109,10 @@ float sobel_filtered_pixel(float *s, int i, int j , int rows, int cols, float *g
    }
    else
    {
+      */
       Gx += gx[0]*s[s_index-cols-1] + gx[1]*s[s_index-cols] + gx[2]*s[s_index-(cols+1)] + gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[6]*s[s_index+cols-1] + gx[7]*s[s_index+cols] + gx[8]*s[s_index+cols+1];
       Gy += gy[0]*s[s_index-cols-1] + gy[1]*s[s_index-cols] + gy[2]*s[s_index-(cols+1)] + gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[6]*s[s_index+cols-1] + gy[7]*s[s_index+cols] + gy[8]*s[s_index+cols+1];
-   }
+   //}
    
    t = sqrt(Gx*Gx + Gy*Gy);
 
@@ -155,7 +156,7 @@ void sobel_kernel_gpu(float *s,  // source image pixels
       //for (int j = 0; j < cols; j++)
       //{
          //d[i*cols+j] = sobel_filtered_pixel(s, i, j, rows, cols, gx, gy);
-         d[i] = sobel_filtered_pixel(s, i / cols, i % cols, rows, cols, gx, gy);
+         d[i] = sobel_filtered_pixel(s, i/cols, i%cols, rows, cols, gx, gy);
          //printf("in kernel - index is: %d, i is: %d, j is: %d \n", i, i/cols, i%cols);
       //}
    }
