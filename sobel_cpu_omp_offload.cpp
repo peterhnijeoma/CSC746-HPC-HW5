@@ -51,11 +51,11 @@ float sobel_filtered_pixel(float *s, int i, int j , int width, int height, float
    // ADD CODE HERE: add your code here for computing the sobel stencil computation at location (i,j)
    // of input s, returning a float
 
-   int s_loc = i * width + j;  // s index at [i.j], the center
+   int s_index = i * width + j;  // s index at [i.j], the center
    float Gx, Gy;
 
-   Gx = gx[0]*s[s_loc-width-1] + gx[1]*s[s_loc-width] + gx[2]*s[s_loc-(width+1)] + gx[3]*s[s_loc-1] + gx[4]*s[s_loc] + gx[5]*s[s_loc+1] + gx[6]*s[s_loc+width-1] + gx[7]*s[s_loc+width] + gx[8]*s[s_loc+width+1];
-   Gy = gy[0]*s[s_loc-width-1] + gy[1]*s[s_loc-width] + gy[2]*s[s_loc-(width+1)] + gy[3]*s[s_loc-1] + gy[4]*s[s_loc] + gy[5]*s[s_loc+1] + gy[6]*s[s_loc+width-1] + gy[7]*s[s_loc+width] + gy[8]*s[s_loc+width+1];
+   Gx = gx[0]*s[s_index-width-1] + gx[1]*s[s_index-width] + gx[2]*s[s_index-(width+1)] + gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[6]*s[s_index+width-1] + gx[7]*s[s_index+width] + gx[8]*s[s_index+width+1];
+   Gy = gy[0]*s[s_index-width-1] + gy[1]*s[s_index-width] + gy[2]*s[s_index-(width+1)] + gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[6]*s[s_index+width-1] + gy[7]*s[s_index+width] + gy[8]*s[s_index+width+1];
       
    t = sqrt(Gx*Gx + Gy*Gy);
 
@@ -82,7 +82,7 @@ void do_sobel_filtering(float *in, float *out, int dims[2])
    off_t out_indx = 0;
    int width, height, nvals;
 
-   width=width;
+   width=dims[0];
    height=dims[1];
    nvals=width*height;
 
@@ -104,7 +104,7 @@ void do_sobel_filtering(float *in, float *out, int dims[2])
 
        // initialize out values to 0.0 since we wil skip the edges of the source data
        #pragma omp target teams distribute parallel for
-       for (int i = 0; i < nvals; i++)
+       for (int i = 0; i < width*height; i++)
        {
           out[i] = 0.0;
        }
@@ -112,7 +112,7 @@ void do_sobel_filtering(float *in, float *out, int dims[2])
        // #pragma omp barier
 
        #pragma omp target teams distribute parallel for collapse(2)
-       for (int i = 1; i < dims[1]-1; i++)     // skip the edges of the data
+       for (int i = 1; i < height-1; i++)     // skip the edges of the data
        {
           for (int j = 1; j < width-1; j++)  // skip the edges of the data
           {
@@ -127,9 +127,9 @@ int main (int ac, char *av[])
 {
    // filenames, etc, hard coded at the top of the file
    // load input data
-//    char input_fname[]="../data/zebra-gray-raw-int8.dat";
-//   int data_dims[2] = {3556, 2573};
-//   char output_fname[] = "../data/processed-raw-int8-cpu.dat";
+   // char input_fname[]="../data/zebra-gray-raw-int8.dat";
+   // int data_dims[2] = {3556, 2573};
+   // char output_fname[] = "../data/processed-raw-int8-cpu.dat";
 
    off_t nvalues = data_dims[0]*data_dims[1];
    unsigned char *in_data_bytes = (unsigned char *)malloc(sizeof(unsigned char)*nvalues);

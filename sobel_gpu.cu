@@ -120,6 +120,9 @@ float sobel_filtered_pixel(float *s, int i, int j , int rows, int cols, float *g
       printf("in sobel filetering 9- i is: %d, j is: %d, s index is: %d \n", i, j, s_index);
       Gx += gx[0]*s[s_index-cols-1] + gx[1]*s[s_index-cols] + gx[2]*s[s_index-(cols+1)] + gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[6]*s[s_index+cols-1] + gx[7]*s[s_index+cols] + gx[8]*s[s_index+cols+1];
       Gy += gy[0]*s[s_index-cols-1] + gy[1]*s[s_index-cols] + gy[2]*s[s_index-(cols+1)] + gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[6]*s[s_index+cols-1] + gy[7]*s[s_index+cols] + gy[8]*s[s_index+cols+1];
+
+      //Gx = gx[0]*s[s_index-dims[0]-1] + gx[1]*s[s_index-dims[0]] + gx[2]*s[s_index-(dims[0]+1)] + gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[6]*s[s_index+dims[0]-1] + gx[7]*s[s_index+dims[0]] + gx[8]*s[s_index+dims[0]+1];
+      //Gy = gy[0]*s[s_index-dims[0]-1] + gy[1]*s[s_index-dims[0]] + gy[2]*s[s_index-(dims[0]+1)] + gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[6]*s[s_index+dims[0]-1] + gy[7]*s[s_index+dims[0]] + gy[8]*s[s_index+dims[0]+1];
    }
    
    t = sqrt(Gx*Gx + Gy*Gy);
@@ -158,8 +161,6 @@ void sobel_kernel_gpu(float *s,  // source image pixels
 
    int index = blockIdx.x * blockDim.x + threadIdx.x;
    int stride = blockDim.x * gridDim.x;
-
-   
 
    for (int i = index; i < n; i += stride)
    {

@@ -50,51 +50,8 @@ float sobel_filtered_pixel(float *s, int i, int j , int dims[], float *gx, float
    int s_index = i * dims[0] + j; // s index at [i,j] the center
    float Gx, Gy;
 
-   // if (i == 0 && j == 0)
-   // {
-   //    Gx += gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[7]*s[s_index+dims[0]] + gx[8]*s[s_index+dims[0]+1];
-   //    Gy += gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[7]*s[s_index+dims[0]] + gy[8]*s[s_index+dims[0]+1];
-   // }
-   // else if (i == 0 && j < dims[0]-1)
-   // {
-   //    Gx += gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[6]*s[s_index+dims[0]-1] + gx[7]*s[s_index+dims[0]] + gx[8]*s[s_index+dims[0]+1];
-   //    Gy += gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[6]*s[s_index+dims[0]-1] + gy[7]*s[s_index+dims[0]] + gy[8]*s[s_index+dims[0]+1];
-   // }
-   // else if (i == 0 && j == dims[0]-1)
-   // {
-   //    Gx += gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[6]*s[s_index+dims[0]-1] + gx[7]*s[s_index+dims[0]];
-   //    Gy += gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[6]*s[s_index+dims[0]-1] + gy[7]*s[s_index+dims[0]];
-   // }
-   // else if (i > 0 && i < dims[1]-1 && j == 0)
-   // {
-   //    Gx += gx[1]*s[s_index-dims[0]] + gx[2]*s[s_index-(dims[0]+1)] + gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[7]*s[s_index+dims[0]] + gx[8]*s[s_index+dims[0]+1];
-   //    Gy += gy[1]*s[s_index-dims[0]] + gy[2]*s[s_index-(dims[0]+1)] + gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[7]*s[s_index+dims[0]] + gy[8]*s[s_index+dims[0]+1];
-   // }
-   // else if (i == dims[1]-1 && j == 0)
-   // {
-   //    Gx += gx[1]*s[s_index-dims[0]] + gx[2]*s[s_index-(dims[0]+1)] + gx[4]*s[s_index] + gx[5]*s[s_index+1];
-   //    Gy += gy[1]*s[s_index-dims[0]] + gy[2]*s[s_index-(dims[0]+1)] + gy[4]*s[s_index] + gy[5]*s[s_index+1];
-   // }
-   // else if (i == dims[1]-1 && j > 0 && j < dims[0]-1)
-   // {
-   //    Gx += gx[0]*s[s_index-dims[0]-1] + gx[1]*s[s_index-dims[0]] + gx[2]*s[s_index-(dims[0]+1)] + gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[5]*s[s_index+1];
-   //    Gy += gy[0]*s[s_index-dims[0]-1] + gy[1]*s[s_index-dims[0]] + gy[2]*s[s_index-(dims[0]+1)] + gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[5]*s[s_index+1];
-   // }
-   // else if (i == dims[1]-1 && j == dims[0]-1)
-   // {
-   //    Gx += gx[0]*s[s_index-dims[0]-1] + gx[1]*s[s_index-dims[0]] + gx[3]*s[s_index-1] + gx[4]*s[s_index];
-   //    Gy += gy[0]*s[s_index-dims[0]-1] + gy[1]*s[s_index-dims[0]] + gy[3]*s[s_index-1] + gy[4]*s[s_index];
-   // }
-   // else if (i > 0 && i < dims[1] -1 && j == dims[0]-1)
-   // {
-   //    Gx += gx[0]*s[s_index-dims[0]-1] + gx[1]*s[s_index-dims[0]] + gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[6]*s[s_index+dims[0]-1] + gx[7]*s[s_index+dims[0]];
-   //    Gy += gy[0]*s[s_index-dims[0]-1] + gy[1]*s[s_index-dims[0]] + gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[6]*s[s_index+dims[0]-1] + gy[7]*s[s_index+dims[0]];
-   // }
-   // else
-   // {
-      Gx = gx[0]*s[s_index-dims[0]-1] + gx[1]*s[s_index-dims[0]] + gx[2]*s[s_index-(dims[0]+1)] + gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[6]*s[s_index+dims[0]-1] + gx[7]*s[s_index+dims[0]] + gx[8]*s[s_index+dims[0]+1];
-      Gy = gy[0]*s[s_index-dims[0]-1] + gy[1]*s[s_index-dims[0]] + gy[2]*s[s_index-(dims[0]+1)] + gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[6]*s[s_index+dims[0]-1] + gy[7]*s[s_index+dims[0]] + gy[8]*s[s_index+dims[0]+1];
-   //}
+   Gx = gx[0]*s[s_index-dims[0]-1] + gx[1]*s[s_index-dims[0]] + gx[2]*s[s_index-(dims[0]+1)] + gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[6]*s[s_index+dims[0]-1] + gx[7]*s[s_index+dims[0]] + gx[8]*s[s_index+dims[0]+1];
+   Gy = gy[0]*s[s_index-dims[0]-1] + gy[1]*s[s_index-dims[0]] + gy[2]*s[s_index-(dims[0]+1)] + gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[6]*s[s_index+dims[0]-1] + gy[7]*s[s_index+dims[0]] + gy[8]*s[s_index+dims[0]+1];
    
    t = sqrt(Gx*Gx + Gy*Gy);
    return t;
