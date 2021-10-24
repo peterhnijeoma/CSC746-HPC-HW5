@@ -1,8 +1,8 @@
 //
-// (C) 2021, E. Wes Bethel
-// conv_harness_cpu.cpp: 
+// (C) 2021, E. Wes Bethel and Peter Ijeoma
+// sobel_cpu.cpp: 
 // usage:
-//      conv_harness_cpu [no args, all is hard coded]
+//      sobel_cpu [no args, all is hard coded]
 //
 
 #include <iostream>

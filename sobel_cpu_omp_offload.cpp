@@ -82,9 +82,9 @@ void do_sobel_filtering(float *in, float *out, int dims[2])
    off_t out_indx = 0;
    int width, height, nvals;
 
-   width=dims[0];
-   height=dims[1];
-   nvals=width*height;
+   width = dims[0];
+   height = dims[1];
+   nvals = width*height;
 
 // define the data mapping from the host to the device
 // some of the data we only need to send: in, Gx, Gy, width, height

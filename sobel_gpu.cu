@@ -1,10 +1,11 @@
 //
 // (C) 2021, E. Wes Bethel and Peter Ijeoma
-// sobel_gpu.cpp
+// sobel_gpu.cu
 // usage:
 //      sobel_gpu [<number of threads per block> <number of thread blocks>]
-// if no argument (number of threads per block) is passed, the hard coded value
-// 256 is used and the number of block is 1 as hard coded.
+// if no arguments (number of threads per block and number of thread blocks)
+// is passed, the hard coded number of threads 256 is used and the number of
+// the number of thread blocks is 1 as hard coded.
 
 #include <iostream>
 #include <vector>
@@ -58,8 +59,7 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=t
 __device__ 
 float sobel_filtered_pixel(float *s, int i, int j , int rows, int cols, float *gx, float *gy)
 {
-
-   float t=0.0;
+   float t = 0.0;
 
    // ADD CODE HERE:  add your code here for computing the sobel stencil computation at location (i,j)
    // of input s, returning a float
@@ -112,13 +112,7 @@ void sobel_kernel_gpu(float *s,  // source image pixels
 
    for (int i = index; i < n; i += stride)
    {
-      //for (int j = 0; j < cols; j++)
-      //{
-         //d[i*cols+j] = sobel_filtered_pixel(s, i, j, rows, cols, gx, gy);
-         printf("in kernel -1 - index is: %d, i is: %d, j is: %d \n", i, i/cols, i%cols);
-         d[i] = sobel_filtered_pixel(s, i/cols, i%cols, rows, cols, gx, gy);
-         printf("in kernel -2 - index is: %d, i is: %d, j is: %d \n", i, i/cols, i%cols);
-      //}
+      d[i] = sobel_filtered_pixel(s, i/cols, i%cols, rows, cols, gx, gy);
    }
 }
 
@@ -186,13 +180,11 @@ int main (int ac, char *av[])
    {
       nThreadsPerBlock = atoi(av[1]);
       nBlocks = atoi(av[2]);
-      //nBlocks = (nvalues + nThreadsPerBlock -1)/nThreadsPerBlock;
    }
    
    printf(" GPU configuration: %d blocks, %d threads per block \n", nBlocks, nThreadsPerBlock);
 
    // invoke the kernel on the device
-   //sobel_kernel_gpu<<<nBlocks, nThreadsPerBlock>>>(in_data_floats, out_data_floats, nvalues, data_dims[1], data_dims[0], Gx, Gy);
    sobel_kernel_gpu<<<nBlocks, nThreadsPerBlock>>>(in_data_floats, out_data_floats, nvalues, data_dims[1], data_dims[0], device_gx, device_gy);
 
    // wait for it to finish, check errors
