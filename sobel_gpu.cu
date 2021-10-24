@@ -67,7 +67,13 @@ float sobel_filtered_pixel(float *s, int i, int j , int rows, int cols, float *g
    int s_index = i * cols + j;  // s index at [i,j] - the center
    float Gx = 0.0f, Gy = 0.0f;
 
-   if (i == 0 && j == 0)
+   if ((i > 0 && i < rows -1) && (j > 0 && j < cols -1))
+   {
+      Gx += gx[0]*s[s_index-cols-1] + gx[1]*s[s_index-cols] + gx[2]*s[s_index-cols+1] + gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[6]*s[s_index+cols-1] + gx[7]*s[s_index+cols] + gx[8]*s[s_index+cols+1];
+      Gy += gy[0]*s[s_index-cols-1] + gy[1]*s[s_index-cols] + gy[2]*s[s_index-cols+1] + gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[6]*s[s_index+cols-1] + gy[7]*s[s_index+cols] + gy[8]*s[s_index+cols+1];
+   }
+   
+   /* if (i == 0 && j == 0)
    {
       printf("in sobel filetering 1- i is: %d, j is: %d, s index is: %d \n", i, j, s_index);
       //Gx += gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[7]*s[s_index+cols] + gx[8]*s[s_index+cols+1];
@@ -131,7 +137,7 @@ float sobel_filtered_pixel(float *s, int i, int j , int rows, int cols, float *g
       Gx += gx[0]*s[s_index-cols-1] + gx[1]*s[s_index-cols] + gx[2]*s[s_index-cols+1] + gx[3]*s[s_index-1] + gx[4]*s[s_index] + gx[5]*s[s_index+1] + gx[6]*s[s_index+cols-1] + gx[7]*s[s_index+cols] + gx[8]*s[s_index+cols+1];
       Gy += gy[0]*s[s_index-cols-1] + gy[1]*s[s_index-cols] + gy[2]*s[s_index-cols+1] + gy[3]*s[s_index-1] + gy[4]*s[s_index] + gy[5]*s[s_index+1] + gy[6]*s[s_index+cols-1] + gy[7]*s[s_index+cols] + gy[8]*s[s_index+cols+1];
    }
-   
+   */
    t = sqrt(Gx*Gx + Gy*Gy);
 
    return t;
