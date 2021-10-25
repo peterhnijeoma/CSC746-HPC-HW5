@@ -33,6 +33,7 @@
 
 2. for GPU code - cuda and OpenMP with device offload
 
+# modify the script as indicated in the script file to get runtime and SM efficiency.
 % ../scripts/gpu-batch-script.sh
 
 

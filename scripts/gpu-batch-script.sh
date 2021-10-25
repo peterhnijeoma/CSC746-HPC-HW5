@@ -19,12 +19,18 @@ for nB in 1 4 16 64 256 1024 4096
   do
     for nT in 32 64 128 256 512 1024
       do
+         ## uncomment the code below to get SM efficiency
          ##nvprof -m sm_efficiency ./sobel_gpu $nT $nB
+
+         ## comment the line below when running for SM efficiency
          nvprof ./sobel_gpu $nT $nB
     done
 done
 
+## uncomment the code below to get SM efficiency
 ##nvprof -m sm_efficiency ./sobel_cpu_omp_offload
+
+## comment the line below when running for SM efficiency
 nvprof ./sobel_cpu_omp_offload
 
 
